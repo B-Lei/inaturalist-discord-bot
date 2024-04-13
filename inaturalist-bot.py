@@ -76,7 +76,7 @@ async def send_observation_message(taxon, ctx, query):
     try:
         observation = get_observation(taxon, query)
         if not observation:
-            await ctx.send('No results found.')
+            await ctx.send("No results found.")
             return
         if hide_names:
             title = f"Common Name: ||{observation['preferred_common_name']}||" if observation['preferred_common_name'] != 'N/A' else f"Scientific Name: ||{observation['scientific_name']}||"
@@ -85,20 +85,20 @@ async def send_observation_message(taxon, ctx, query):
         embed = discord.Embed(title=title)
         embed.set_image(url=observation['photo_url'])
         fields = {
-            'Common Name': observation['preferred_common_name'] if observation['preferred_common_name'] not in title else '',
-            'Scientific Name': observation['scientific_name'] if observation['scientific_name'] not in title else '',
-            'Wikipedia Link': observation['wikipedia_url'],
-            'iNaturalist Link': observation['uri'],
+            "Common Name": observation['preferred_common_name'] if observation['preferred_common_name'] not in title else '',
+            "Scientific Name": observation['scientific_name'] if observation['scientific_name'] not in title else '',
+            "Wikipedia Link": observation['wikipedia_url'],
+            "iNaturalist Link": observation['uri'],
         }
         for name, value in fields.items():
             if value:
-                if hide_names and name != 'iNaturalist Link':
-                    embed.add_field(name=name, value=f"||{value}||")  # Add spoiler tags
+                if hide_names and name != "iNaturalist Link":
+                    embed.add_field(name=name, value=f'||{value}||')  # Add spoiler tags
                 else:
                     embed.add_field(name=name, value=value)
         await ctx.send(embed=embed)
     except Exception as e:
-        print('Error occurred:', e)
+        print("Error occurred:", e)
         await ctx.send("Sorry, I had trouble retrieving an image.")
 
 def clear_caches():  # Every 24 hours, clear all caches
@@ -112,7 +112,7 @@ def clear_caches():  # Every 24 hours, clear all caches
 # -------------------------------------
 @bot.event
 async def on_ready():
-    print('Logged in as {0.user}'.format(bot))
+    print("Logged in as {0.user}".format(bot))
 
 @bot.event
 async def on_command_error(ctx, error):
@@ -122,65 +122,65 @@ async def on_command_error(ctx, error):
 # -------------------------------------
 # Discord Bot Command Definitions
 # -------------------------------------
-@bot.command(brief="Bird pics", description="")
+@bot.command(brief="Bird pics")
 async def birdpic(ctx, *args):
-    await send_observation_message("Aves", ctx, " ".join(args))
+    await send_observation_message('Aves', ctx, ' '.join(args))
 
-@bot.command(brief="Fungus pics", description="")
+@bot.command(brief="Fungus pics")
 async def mushpic(ctx, *args):
-    await send_observation_message("Fungi", ctx, " ".join(args))
+    await send_observation_message('Fungi', ctx, ' '.join(args))
 
-@bot.command(brief="Amphibian pics", description="")
+@bot.command(brief="Amphibian pics")
 async def ampic(ctx, *args):
-    await send_observation_message("Amphibia", ctx, " ".join(args))
+    await send_observation_message('Amphibia', ctx, ' '.join(args))
 
-@bot.command(brief="Reptile pics", description="")
+@bot.command(brief="Reptile pics")
 async def reppic(ctx, *args):
-    await send_observation_message("Reptilia", ctx, " ".join(args))
+    await send_observation_message('Reptilia', ctx, ' '.join(args))
 
-@bot.command(brief="Mammal pics", description="")
+@bot.command(brief="Mammal pics")
 async def mampic(ctx, *args):
-    await send_observation_message("Mammalia", ctx, " ".join(args))
+    await send_observation_message('Mammalia', ctx, ' '.join(args))
 
-@bot.command(brief="Plant pics", description="")
+@bot.command(brief="Plant pics")
 async def plantpic(ctx, *args):
-    await send_observation_message("Plantae", ctx, " ".join(args))
+    await send_observation_message('Plantae', ctx, ' '.join(args))
 
-@bot.command(brief="Insect pics", description="")
+@bot.command(brief="Insect pics")
 async def bugpic(ctx, *args):
-    await send_observation_message("Insecta", ctx, " ".join(args))
+    await send_observation_message('Insecta', ctx, ' '.join(args))
 
-@bot.command(brief="Mollusk pics", description="")
+@bot.command(brief="Mollusk pics")
 async def molpic(ctx, *args):
-    await send_observation_message("Mollusca", ctx, " ".join(args))
+    await send_observation_message('Mollusca', ctx, ' '.join(args))
 
-@bot.command(brief="Fish pics", description="")
+@bot.command(brief="Fish pics")
 async def fishpic(ctx, *args):
-    await send_observation_message("Actinopterygii", ctx, " ".join(args))
+    await send_observation_message('Actinopterygii', ctx, ' '.join(args))
 
-@bot.command(brief="Clear repetition blacklist", description="")
+@bot.command(brief="Clear repetition blacklist")
 async def clearcache(ctx):
     clear_caches()
-    await ctx.send('The repetition cache has been cleared, and timer has been reset to 24 hours.')
+    await ctx.send("The repetition cache has been cleared, and timer has been reset to 24 hours.")
 
-@bot.command(brief="Hide names using spoiler tags", description="")
+@bot.command(brief="Hide names using spoiler tags")
 async def namehide(ctx):
     global hide_names
     hide_names = True
-    await ctx.send('Names will now be hidden using spoiler tags.', description="")
+    await ctx.send("Names will now be hidden using spoiler tags.")
 
-@bot.command(brief="Show names", description="")
+@bot.command(brief="Show names")
 async def nameshow(ctx):
     global hide_names
     hide_names = False
-    await ctx.send('Names will now be displayed without spoiler tags.')
+    await ctx.send("Names will now be displayed without spoiler tags.")
 
 # -------------------------------------
 # Main Execution
 # -------------------------------------
 def main():
     clear_caches()  # Start the cache clearing timer
-    bot.run(os.environ["DISCORD_TOKEN"])
+    bot.run(os.environ['DISCORD_TOKEN'])
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
