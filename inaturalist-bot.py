@@ -2,7 +2,7 @@ import os
 import threading
 import discord
 from discord.ext import commands
-from pyinaturalist import get_observations
+from pyinaturalist import get_observations, get_taxa
 from datetime import timedelta, datetime
 
 # -------------------------------------
@@ -26,42 +26,47 @@ bot = commands.Bot(
 # -------------------------------------
 observation_cache = set()   # Cache to avoid returning the same observation
 taxon_cache = set()         # Cache to avoid returning the same taxon
+saved_taxa = dict()         # Cache of taxon_ids to reduce API calls
 hide_names = False
-supported_taxa = {
-    'Aves': 3,
-    'Fungi': 47170,
-    'Amphibia': 20978,
-    'Reptilia': 26036,
-    'Mammalia': 40151,
-    'Plantae': 47126,
-    'Insecta': 47158,
-    'Mollusca': 47115,
-    'Actinopterygii': 47178,
-}
 
 # -------------------------------------
 # Function Definitions
 # -------------------------------------
+def get_taxon_id(taxon):
+    if taxon in saved_taxa.keys():
+        return saved_taxa[taxon]
+    else:
+        taxon_resp = get_taxa(
+            page=1,
+            per_page=1,
+            q=taxon,
+        )
+        if (not taxon_resp) or (not taxon_resp['results']):
+            return None
+        taxon_id = taxon_resp['results'][0]['id']
+        saved_taxa[taxon] = taxon_id
+        return taxon_id
+
 def get_observation(taxon, query=None):
     not_ids = list(observation_cache)
     not_taxons = list(taxon_cache)
-    whitelist = list(supported_taxa.values())  # Avoid blacklisting major taxa
+    taxon_id = get_taxon_id(taxon)
     observations = get_observations(
-        place_id='any',
-        iconic_taxa=taxon,
+        taxon_id=taxon_id,
+        taxon_name=query,
+        min_rank='species',
         photos=True,
         identified=True,
         page=1,
         per_page=1,
         not_id=not_ids,
         without_taxon_id=not_taxons,
-        q=query,
     )
-    if not observations['results']:
+    if (not observations) or (not observations['results']):
         return None
     observation = observations['results'][0]
     observation_cache.add(observation['id'])
-    if observation['taxon']['id'] not in whitelist and not query:
+    if not query:
         taxon_cache.add(observation['taxon']['id'])
     details = {
         'scientific_name': observation['taxon']['name'],
@@ -72,7 +77,7 @@ def get_observation(taxon, query=None):
     }
     return details
 
-async def send_observation_message(taxon, ctx, query):
+async def send_observation_message(ctx, taxon, query):
     try:
         observation = get_observation(taxon, query)
         if not observation:
@@ -105,7 +110,8 @@ def clear_caches():  # Every 24 hours, clear all caches
     global observation_cache, taxon_cache
     observation_cache = set()
     taxon_cache = set()
-    threading.Timer(86400, clear_caches).start()  
+    SECONDS_IN_ONE_DAY = 86400
+    threading.Timer(SECONDS_IN_ONE_DAY, clear_caches).start()
 
 # -------------------------------------
 # Discord Bot Event Handling
@@ -124,39 +130,46 @@ async def on_command_error(ctx, error):
 # -------------------------------------
 @bot.command(brief="Bird pics")
 async def birdpic(ctx, *args):
-    await send_observation_message('Aves', ctx, ' '.join(args))
+    await send_observation_message(ctx, 'Aves', ' '.join(args))
 
 @bot.command(brief="Fungus pics")
 async def mushpic(ctx, *args):
-    await send_observation_message('Fungi', ctx, ' '.join(args))
+    await send_observation_message(ctx, 'Fungi', ' '.join(args))
 
 @bot.command(brief="Amphibian pics")
 async def ampic(ctx, *args):
-    await send_observation_message('Amphibia', ctx, ' '.join(args))
+    await send_observation_message(ctx, 'Amphibia', ' '.join(args))
 
 @bot.command(brief="Reptile pics")
 async def reppic(ctx, *args):
-    await send_observation_message('Reptilia', ctx, ' '.join(args))
+    await send_observation_message(ctx, 'Reptilia',  ' '.join(args))
 
 @bot.command(brief="Mammal pics")
 async def mampic(ctx, *args):
-    await send_observation_message('Mammalia', ctx, ' '.join(args))
+    await send_observation_message(ctx, 'Mammalia', ' '.join(args))
 
 @bot.command(brief="Plant pics")
 async def plantpic(ctx, *args):
-    await send_observation_message('Plantae', ctx, ' '.join(args))
+    await send_observation_message(ctx, 'Plantae', ' '.join(args))
 
 @bot.command(brief="Insect pics")
 async def bugpic(ctx, *args):
-    await send_observation_message('Insecta', ctx, ' '.join(args))
+    await send_observation_message(ctx, 'Insecta', ' '.join(args))
 
 @bot.command(brief="Mollusk pics")
 async def molpic(ctx, *args):
-    await send_observation_message('Mollusca', ctx, ' '.join(args))
+    await send_observation_message(ctx, 'Mollusca', ' '.join(args))
 
 @bot.command(brief="Fish pics")
 async def fishpic(ctx, *args):
-    await send_observation_message('Actinopterygii', ctx, ' '.join(args))
+    await send_observation_message(ctx, 'Actinopterygii', ' '.join(args))
+
+@bot.command(brief="Search using a query")
+async def search(ctx, *args):
+    if len(args) == 0:
+        await ctx.send("Please include a search query.\nUsage: &search [query]")
+    else:
+        await send_observation_message(ctx, None, ' '.join(args))
 
 @bot.command(brief="Clear repetition blacklist")
 async def clearcache(ctx):

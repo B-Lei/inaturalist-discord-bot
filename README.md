@@ -74,6 +74,7 @@ After all "pic" commands, you can optionally add search terms to narrow the pict
   nameshow   Show names
   plantpic   Plant pics
   reppic     Reptile pics
+  search     Search using a query
 
 Type &help command for more info on a command.
 You can also type &help category for more info on a category.
