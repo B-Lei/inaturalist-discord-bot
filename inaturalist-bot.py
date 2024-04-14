@@ -2,16 +2,11 @@ import os
 import threading
 import discord
 from discord.ext import commands
-from discord.ext.commands import Context, errors
 from pyinaturalist import get_observations, get_taxa
 
 # -------------------------------------
 # Discord Bot Initialization
 # -------------------------------------
-help_command = commands.DefaultHelpCommand(
-    no_category='Commands',
-    show_parameter_descriptions=False,
-)
 intents = discord.Intents.default()
 intents.message_content = True
 description = (
@@ -19,6 +14,10 @@ description = (
     "the prefix '&' in front of each command, e.g. \"&birdpic\".\n\n"
     "After all \"pic\" commands, you can optionally add search terms to "
     "narrow the picture selection, e.g. \"&birdpic canada goose\"."
+)
+help_command = commands.DefaultHelpCommand(
+    no_category='Commands',
+    show_parameter_descriptions=False,
 )
 bot = commands.Bot(
     intents=intents,
@@ -95,8 +94,8 @@ def get_observation(taxon: str, query: str = None) -> dict:
     return details
 
 
-async def send_observation_message(
-        ctx: Context, taxon: str, query: str) -> None:
+async def send_observation_message(ctx: commands.Context, taxon: str,
+                                   query: str) -> None:
     try:
         observation = get_observation(taxon, query)
         if not observation:
@@ -141,8 +140,9 @@ async def on_ready() -> None:
 
 
 @bot.event
-async def on_command_error(ctx: Context, error: errors) -> None:
-    if isinstance(error, errors.CommandNotFound):
+async def on_command_error(ctx: commands.Context,
+                           error: commands.errors) -> None:
+    if isinstance(error, commands.errors.CommandNotFound):
         await ctx.send(
             "Unknown command.\nPlease run '&help' for a list of commands.")
 
@@ -151,52 +151,52 @@ async def on_command_error(ctx: Context, error: errors) -> None:
 # Discord Bot Command Definitions
 # -------------------------------------
 @bot.command(brief="Bird pics")
-async def birdpic(ctx: Context, *args: str) -> None:
+async def birdpic(ctx: commands.Context, *args: str) -> None:
     await send_observation_message(ctx, 'Aves', ' '.join(args))
 
 
 @bot.command(brief="Fungus pics")
-async def mushpic(ctx: Context, *args: str) -> None:
+async def mushpic(ctx: commands.Context, *args: str) -> None:
     await send_observation_message(ctx, 'Fungi', ' '.join(args))
 
 
 @bot.command(brief="Amphibian pics")
-async def ampic(ctx: Context, *args: str) -> None:
+async def ampic(ctx: commands.Context, *args: str) -> None:
     await send_observation_message(ctx, 'Amphibia', ' '.join(args))
 
 
 @bot.command(brief="Reptile pics")
-async def reppic(ctx: Context, *args: str) -> None:
+async def reppic(ctx: commands.Context, *args: str) -> None:
     await send_observation_message(ctx, 'Reptilia',  ' '.join(args))
 
 
 @bot.command(brief="Mammal pics")
-async def mampic(ctx: Context, *args: str) -> None:
+async def mampic(ctx: commands.Context, *args: str) -> None:
     await send_observation_message(ctx, 'Mammalia', ' '.join(args))
 
 
 @bot.command(brief="Plant pics")
-async def plantpic(ctx: Context, *args: str) -> None:
+async def plantpic(ctx: commands.Context, *args: str) -> None:
     await send_observation_message(ctx, 'Plantae', ' '.join(args))
 
 
 @bot.command(brief="Insect pics")
-async def bugpic(ctx: Context, *args: str) -> None:
+async def bugpic(ctx: commands.Context, *args: str) -> None:
     await send_observation_message(ctx, 'Insecta', ' '.join(args))
 
 
 @bot.command(brief="Mollusk pics")
-async def molpic(ctx: Context, *args: str) -> None:
+async def molpic(ctx: commands.Context, *args: str) -> None:
     await send_observation_message(ctx, 'Mollusca', ' '.join(args))
 
 
 @bot.command(brief="Fish pics")
-async def fishpic(ctx: Context, *args: str) -> None:
+async def fishpic(ctx: commands.Context, *args: str) -> None:
     await send_observation_message(ctx, 'Actinopterygii', ' '.join(args))
 
 
 @bot.command(brief="Search using a query")
-async def search(ctx: Context, *args: str) -> None:
+async def search(ctx: commands.Context, *args: str) -> None:
     if len(args) == 0:
         await ctx.send(
             "Please include a search query.\nUsage: &search [query]")
@@ -205,21 +205,21 @@ async def search(ctx: Context, *args: str) -> None:
 
 
 @bot.command(brief="Clear memory")
-async def clearcache(ctx: Context) -> None:
+async def clearmem(ctx: commands.Context) -> None:
     clear_caches()
     await ctx.send(
-        "Memory has been cleared, and timer has been reset to 24 hours.")
+        "Memory has been cleared of previously seen taxa and observations.")
 
 
-@bot.command(brief="Hide names using spoiler tags")
-async def namehide(ctx: Context) -> None:
+@bot.command(brief="Hide names using spoilers")
+async def namehide(ctx: commands.Context) -> None:
     global hide_names
     hide_names = True
     await ctx.send("Names will now be hidden using spoiler tags.")
 
 
-@bot.command(brief="Show names")
-async def nameshow(ctx: Context) -> None:
+@bot.command(brief="Show names without spoilers")
+async def nameshow(ctx: commands.Context) -> None:
     global hide_names
     hide_names = False
     await ctx.send("Names will now be displayed without spoiler tags.")

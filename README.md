@@ -61,20 +61,20 @@ Hi! I'm a bot that grabs pictures from iNaturalist. Don't forget to add the pref
 After all "pic" commands, you can optionally add search terms to narrow the picture selection, e.g. "&birdpic canada goose".
 
 ​Commands:
-  ampic      Amphibian pics
-  birdpic    Bird pics
-  bugpic     Insect pics
-  clearcache Clear memory
-  fishpic    Fish pics
-  help       Shows this message
-  mampic     Mammal pics
-  molpic     Mollusk pics
-  mushpic    Fungus pics
-  namehide   Hide names using spoiler tags
-  nameshow   Show names
-  plantpic   Plant pics
-  reppic     Reptile pics
-  search     Search using a query
+  ampic    Amphibian pics
+  birdpic  Bird pics
+  bugpic   Insect pics
+  clearmem Clear memory
+  fishpic  Fish pics
+  help     Shows this message
+  mampic   Mammal pics
+  molpic   Mollusk pics
+  mushpic  Fungus pics
+  namehide Hide names using spoilers
+  nameshow Show names without spoilers
+  plantpic Plant pics
+  reppic   Reptile pics
+  search   Search using a query
 
 Type &help command for more info on a command.
 You can also type &help category for more info on a category.
