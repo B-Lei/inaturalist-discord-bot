@@ -56,15 +56,15 @@ Also available as a Docker image in [Docker Hub](https://hub.docker.com/r/numact
 Please refer to the `&help` text below.
 
 ```
-Hi! I'm a bot that grabs pictures from iNaturalist. Don't forget to add the prefix '&' in front of each command, e.g. "&birdpic."
+Hi! I'm a bot that grabs pictures from iNaturalist. Don't forget to add the prefix '&' in front of each command, e.g. "&birdpic".
 
-After all "pic" commands, you can optionally add search terms to narrow the picture selection, e.g. "&birdpic canada goose."
+After all "pic" commands, you can optionally add search terms to narrow the picture selection, e.g. "&birdpic canada goose".
 
 ​Commands:
   ampic      Amphibian pics
   birdpic    Bird pics
   bugpic     Insect pics
-  clearcache Clear repetition blacklist
+  clearcache Clear memory
   fishpic    Fish pics
   help       Shows this message
   mampic     Mammal pics
