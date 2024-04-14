@@ -65,8 +65,10 @@ After all "pic" commands, you can optionally add search terms to narrow the pict
   birdpic  Bird pics
   bugpic   Insect pics
   clearmem Clear memory
+  crustpic Crustacean pics
   fishpic  Fish pics
   help     Shows this message
+  isopic   Isopod pics
   mampic   Mammal pics
   molpic   Mollusk pics
   mushpic  Fungus pics

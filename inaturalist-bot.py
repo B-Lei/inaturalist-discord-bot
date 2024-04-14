@@ -68,9 +68,9 @@ def get_observation(taxon: str, query: str = None) -> dict:
     observations = get_observations(
         taxon_id=taxon_id,
         taxon_name=query,
+        quality_grade='research',
         rank='species',
         photos=True,
-        identified=True,
         page=1,
         per_page=1,
         not_id=not_ids,
@@ -150,49 +150,59 @@ async def on_command_error(ctx: commands.Context,
 # -------------------------------------
 # Discord Bot Command Definitions
 # -------------------------------------
-@bot.command(brief="Bird pics")
-async def birdpic(ctx: commands.Context, *args: str) -> None:
-    await send_observation_message(ctx, 'Aves', ' '.join(args))
-
-
-@bot.command(brief="Fungus pics")
-async def mushpic(ctx: commands.Context, *args: str) -> None:
-    await send_observation_message(ctx, 'Fungi', ' '.join(args))
-
-
-@bot.command(brief="Amphibian pics")
+@bot.command(brief="Amphibian pics")  # Iconic taxon
 async def ampic(ctx: commands.Context, *args: str) -> None:
     await send_observation_message(ctx, 'Amphibia', ' '.join(args))
 
 
-@bot.command(brief="Reptile pics")
-async def reppic(ctx: commands.Context, *args: str) -> None:
-    await send_observation_message(ctx, 'Reptilia',  ' '.join(args))
+@bot.command(brief="Bird pics")  # Iconic taxon
+async def birdpic(ctx: commands.Context, *args: str) -> None:
+    await send_observation_message(ctx, 'Aves', ' '.join(args))
 
 
-@bot.command(brief="Mammal pics")
-async def mampic(ctx: commands.Context, *args: str) -> None:
-    await send_observation_message(ctx, 'Mammalia', ' '.join(args))
+@bot.command(brief="Crustacean pics")
+async def crustpic(ctx: commands.Context, *args: str) -> None:
+    await send_observation_message(ctx, 'Crustacea', ' '.join(args))
 
 
-@bot.command(brief="Plant pics")
-async def plantpic(ctx: commands.Context, *args: str) -> None:
-    await send_observation_message(ctx, 'Plantae', ' '.join(args))
+@bot.command(brief="Fish pics")  # Iconic taxon
+async def fishpic(ctx: commands.Context, *args: str) -> None:
+    await send_observation_message(ctx, 'Actinopterygii', ' '.join(args))
 
 
-@bot.command(brief="Insect pics")
+@bot.command(brief="Fungus pics")  # Iconic taxon
+async def mushpic(ctx: commands.Context, *args: str) -> None:
+    await send_observation_message(ctx, 'Fungi', ' '.join(args))
+
+
+@bot.command(brief="Insect pics")  # Iconic taxon
 async def bugpic(ctx: commands.Context, *args: str) -> None:
     await send_observation_message(ctx, 'Insecta', ' '.join(args))
 
 
-@bot.command(brief="Mollusk pics")
+@bot.command(brief="Isopod pics")
+async def isopic(ctx: commands.Context, *args: str) -> None:
+    await send_observation_message(ctx, 'Isopoda', ' '.join(args))
+
+
+@bot.command(brief="Mammal pics")  # Iconic taxon
+async def mampic(ctx: commands.Context, *args: str) -> None:
+    await send_observation_message(ctx, 'Mammalia', ' '.join(args))
+
+
+@bot.command(brief="Mollusk pics")  # Iconic taxon
 async def molpic(ctx: commands.Context, *args: str) -> None:
     await send_observation_message(ctx, 'Mollusca', ' '.join(args))
 
 
-@bot.command(brief="Fish pics")
-async def fishpic(ctx: commands.Context, *args: str) -> None:
-    await send_observation_message(ctx, 'Actinopterygii', ' '.join(args))
+@bot.command(brief="Plant pics")  # Iconic taxon
+async def plantpic(ctx: commands.Context, *args: str) -> None:
+    await send_observation_message(ctx, 'Plantae', ' '.join(args))
+
+
+@bot.command(brief="Reptile pics")  # Iconic taxon
+async def reppic(ctx: commands.Context, *args: str) -> None:
+    await send_observation_message(ctx, 'Reptilia',  ' '.join(args))
 
 
 @bot.command(brief="Search using a query")
